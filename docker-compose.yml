@@ -1,0 +1,37 @@
+volumes:
+  app-db-data:
+
+services:
+  db:
+    image: postgres:17
+    restart: always
+    hostname: db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+    volumes:
+      - app-db-data:/var/lib/postgresql/data/pgdata
+    env_file:
+      - .env
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: app
+    volumes:
+      - .:/ems
+    env_file:
+      - .env
+#    restart: always
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db

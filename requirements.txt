@@ -1,0 +1,9 @@
+fastapi[standard]==0.116.0
+SQLModel==0.0.24
+pydantic~=2.11.7
+sqlalchemy==2.0.41
+pydantic_core~=2.33.2
+pydantic-settings~=2.10.1
+alembic
+asyncpg
+psycopg2

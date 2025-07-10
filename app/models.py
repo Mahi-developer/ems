@@ -35,6 +35,6 @@ class Event(Base, BaseModelMixin):
 class User(Base, BaseModelMixin):
     __tablename__ = "users"
     name = Column(String(255), index=True, nullable=False)
-    email: EmailStr = Column(String(255), index=True, nullable=False, unique=True)
+    email: EmailStr = Column(String(255), index=True, nullable=False)
     event_id = Column(Integer, ForeignKey("events.id"), nullable=False)
     events = relationship("Event", back_populates="users")

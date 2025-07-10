@@ -46,7 +46,7 @@ class UserBase(BaseModel):
         from_attributes = True
 
 
-class UserCreate(BaseModel):
+class UserCreate(UserBase):
     event_id: int | None = None
 
 

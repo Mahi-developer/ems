@@ -38,16 +38,19 @@ class PaginatedEventResponse(BaseModel):
     page: int
 
 
-class UserCreate(BaseModel):
+class UserBase(BaseModel):
     name: str = Field(max_length=255)
     email: EmailStr = Field(max_length=255)
-    event_id: int | None = None
 
     class Config:
         from_attributes = True
 
 
+class UserCreate(BaseModel):
+    event_id: int | None = None
+
+
 class UsersPublic(BaseModel):
-    data: list[UserCreate]
+    data: list[UserBase]
     count: int
     page: int

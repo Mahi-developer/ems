@@ -25,7 +25,7 @@ async def get_by_id(session: AsyncSession, model: Type[T], obj_id: int) -> Optio
 async def fetch_all_with_pagination(
     session: AsyncSession, model: Type[T], page: int = 0, limit: int = settings.PAGINATION_LIMIT
 ) -> ScalarResult[Any]:
-    return await session.scalars(select(model).offset(page).limit(limit))
+    return await session.scalars(select(model).offset(page * limit).limit(limit))
 
 async def get_count(session: AsyncSession, model: Type[T]) -> Optional[T]:
     return await session.scalar(select(func.count()).select_from(model))

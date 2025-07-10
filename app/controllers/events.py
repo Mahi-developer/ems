@@ -4,7 +4,7 @@ from sqlalchemy import func, select
 # module imports
 from app.deps import get_db_session, SessionDep
 from app.models import Event, User
-from app.core.db import create, get_count, get_by_id, fetch_all_with_pagination
+from app.core.db import create, get_count, fetch_all_with_pagination
 from app.core.validator_models import EventCreate, PaginatedEventResponse, UserCreate, UsersPublic
 from app.core.config import settings
 
@@ -48,21 +48,30 @@ async def fetch_events(session: SessionDep, page: int = 0, limit: int = settings
     return PaginatedEventResponse(data=events, count=count, page=page)
 
 
-@events_router.get(
+@events_router.post(
     "/{event_id}/register",
     dependencies=[Depends(get_db_session)],
     response_model=UserCreate
 )
 async def register_attendee(event_id: int, user_in: UserCreate, session: SessionDep):
-    event = await get_by_id(session, model=Event, obj_id=event_id)
+    event = await session.scalar(select(Event).where(Event.id == event_id))
     if not event:
         raise HTTPException(status_code=400, detail="Oops! No event found.")
 
-    if len(event.users) == event.max_capacity:
+    stmt = (
+        select(
+            func.count(User.id).label("registered_count"),
+            func.bool_or(User.email == user_in.email).label("is_registered")
+        ).where(User.event_id == event_id)
+    )
+    result = await session.execute(stmt)
+    row = result.first()
+    registered_count, is_registered = row.registered_count, row.is_registered
+
+    if registered_count == event.max_capacity:
         raise HTTPException(status_code=400, detail="Oops! Houseful.")
 
-    user = await session.scalar(select(User).where(User.event_id == event_id, User.email == user_in.email))
-    if not user:
+    if is_registered:
         raise HTTPException(status_code=400, detail="Oops! User already registered")
 
     user_in.event_id = event_id
@@ -79,5 +88,5 @@ async def fetch_events(event_id: int, session: SessionDep, page: int = 0, limit:
         select(func.count()).select_from(User).where(User.event_id == event_id)
     )
 
-    attendees = await session.scalars(select(User).where(User.event_id == event_id).offset(page).limit(limit))
+    attendees = await session.scalars(select(User).where(User.event_id == event_id).offset(page * limit).limit(limit))
     return UsersPublic(data=attendees, count=count, page=page)

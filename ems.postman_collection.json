@@ -1,0 +1,147 @@
+{
+	"info": {
+		"_postman_id": "108bf2a0-6a3d-45c5-b0f9-fa55e56ba330",
+		"name": "ems",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16746280"
+	},
+	"item": [
+		{
+			"name": "create event",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Test Event 2\",\r\n  \"location\": \"Chennai\",\r\n  \"start_time\": \"2025-07-19T18:47:52.116Z\",\r\n  \"end_time\": \"2025-07-19T20:47:52.116Z\",\r\n  \"max_capacity\": 500\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/events",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "register attendee",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Maheshwaran R\",\r\n  \"email\": \"maheshwaran.developer@gmail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/events/{{event_id}}/register",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"events",
+						"{{event_id}}",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "events",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/events",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "registered attendees",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/events/{{event_id}}/attendees",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"events",
+						"{{event_id}}",
+						"attendees"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Ping",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/events/ping",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"events",
+						"ping"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "URL",
+			"value": "http://localhost:8000",
+			"type": "string"
+		}
+	]
+}
